@@ -1,0 +1,35 @@
+import 'dart:math';
+
+void main() {
+  int variant = 3;
+
+  double Xn = 1.23 * variant;   
+  double Xk = Xn + 10;          
+  double step = 1;              
+  double Y = 4.6 * variant;     
+  double Z = 36.6 / variant;    
+
+  Function bFunc = (double x, double y, double z) {
+    return 1 +
+        pow((y - x).abs(), 2) / pow(z.abs(), 1.34) +
+        pow(z - x, 2) / pow(sin(y), 2) +
+        pow((y - z).abs(), 3) / pow(cos(y), 2);
+  };
+
+  Function outer(double y, double z) {
+    return (double x) {
+      double b = bFunc(x, y, z);
+      double a = pow(x + y, 2) +
+          (x + pow(z, 3) / pow(b * b + y, 2)) /
+              (1 + exp(-(x - y)) + pow(z.abs(), 0.34));
+
+      print("x=${x.toStringAsFixed(2)} y=${y.toStringAsFixed(2)} z=${z.toStringAsFixed(2)} -> a=${a.toStringAsFixed(4)}");
+    };
+  }
+
+  Function tabulate = outer(Y, Z);
+
+  for (double x = Xn; x <= Xk; x += step) {
+    tabulate(x);
+  }
+}
