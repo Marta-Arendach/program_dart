@@ -1,0 +1,89 @@
+void main() {
+  List transportList = [];
+
+  transportList.add(Airplane("Boeing 737", 900, 150));
+  transportList.add(Train("Eurostar", 300, 50));
+  transportList.add(Car("Tesla Model S", 120, 20));
+
+  for (var t in transportList) {
+    print(t.toString());
+    print("Time for 600 km: ${t.calculateTime(600.0).toStringAsFixed(2)} hours");
+    print("Cost for 600 km: ${t.calculateCost(600.0)} UAH\n");
+  }
+}
+
+// Міксин PassengerCarrier
+mixin PassengerCarrier {
+  double calculateTime(double distance); 
+  double calculateCost(double distance);
+  String getType();
+}
+
+// Клас Airplane
+class Airplane with PassengerCarrier {
+  String name;
+  double speed; // km/h
+  double costPerKm; // UAH/km
+
+  Airplane(this.name, this.speed, this.costPerKm);
+
+  @override
+  String getType() => "Airplane";
+
+  @override
+  double calculateTime(double distance) => distance / speed;
+
+  @override
+  double calculateCost(double distance) => distance * costPerKm;
+
+  @override
+  String toString() {
+    return "${getType()} {Name: $name, Speed: $speed km/h, Cost/km: $costPerKm UAH}";
+  }
+}
+
+// Клас Train
+class Train with PassengerCarrier {
+  String name;
+  double speed;
+  double costPerKm;
+
+  Train(this.name, this.speed, this.costPerKm);
+
+  @override
+  String getType() => "Train";
+
+  @override
+  double calculateTime(double distance) => distance / speed;
+
+  @override
+  double calculateCost(double distance) => distance * costPerKm;
+
+  @override
+  String toString() {
+    return "${getType()} {Name: $name, Speed: $speed km/h, Cost/km: $costPerKm UAH}";
+  }
+}
+
+// Клас Car
+class Car with PassengerCarrier {
+  String name;
+  double speed;
+  double costPerKm;
+
+  Car(this.name, this.speed, this.costPerKm);
+
+  @override
+  String getType() => "Car";
+
+  @override
+  double calculateTime(double distance) => distance / speed;
+
+  @override
+  double calculateCost(double distance) => distance * costPerKm;
+
+  @override
+  String toString() {
+    return "${getType()} {Name: $name, Speed: $speed km/h, Cost/km: $costPerKm UAH}";
+  }
+}
