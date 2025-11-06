@@ -1,0 +1,97 @@
+// Клас з даними про маршрут
+class Marshrut {
+  int hour;
+  int passengers;
+  String comment;
+
+  Marshrut(this.hour, this.passengers, this.comment);
+
+  // Гетери і сетери
+  int get getHour => hour;
+  int get getPassengers => passengers;
+  String get getComment => comment;
+
+  set setHour(int h) => hour = h;
+  set setPassengers(int p) => passengers = p;
+  set setComment(String c) => comment = c;
+
+  @override
+  String toString() =>
+      'Година: $hour, пасажирів: $passengers, коментар: $comment';
+}
+
+// 🔹 Generic-клас, який може зберігати будь-які об’єкти
+class Collection<T> {
+  List<T> items = [];
+
+  void addItem(T item) => items.add(item);
+
+  // Generic-метод 1 — вивід усіх елементів
+  void showAll<U>(U Function(T) converter) {
+    for (var item in items) {
+      print(converter(item));
+    }
+  }
+
+  // Generic-метод 2 — пошук мінімального елемента за критерієм
+  T findMin<U extends Comparable>(U Function(T) selector) {
+    if (items.isEmpty) throw Exception('Колекція порожня');
+    T minItem = items.first;
+    U minValue = selector(minItem);
+    for (var item in items) {
+      if (selector(item).compareTo(minValue) < 0) {
+        minItem = item;
+        minValue = selector(item);
+      }
+    }
+    return minItem;
+  }
+
+  // Generic-метод 3 — підрахунок суми числового поля
+  num sumBy<U extends num>(U Function(T) selector) {
+    num sum = 0;
+    for (var item in items) {
+      sum += selector(item);
+    }
+    return sum;
+  }
+}
+
+// 🔹 Клас трамвайної зупинки
+class TramStop {
+  String name;
+  List<int> routes;
+  Collection<Marshrut> marshruts; // Використання generic-класу
+
+  TramStop(this.name, this.routes, this.marshruts);
+
+  // Основні методи з використанням generic-функцій
+  int totalPassengers() => marshruts.sumBy((m) => m.passengers).toInt();
+
+  int hourWithMinPassengers() => marshruts.findMin((m) => m.passengers).hour;
+
+  String longestComment() =>
+      marshruts.findMin((m) => -m.comment.length).comment; // мінус для "max"
+
+  void showResults() {
+    print('Зупинка: $name');
+    print('Маршрути: ${routes.join(", ")}');
+    print('Усі дані:');
+    marshruts.showAll((m) => m.toString());
+    print('Загальна кількість пасажирів: ${totalPassengers()}');
+    print('Година з найменшою кількістю пасажирів: ${hourWithMinPassengers()}');
+    print('Найдовший коментар: "${longestComment()}"');
+  }
+}
+
+void main() {
+  // Створення generic-колекції
+  var marshrutCollection = Collection<Marshrut>();
+  marshrutCollection.addItem(Marshrut(8, 30, 'Ранковий наплив'));
+  marshrutCollection.addItem(Marshrut(10, 15, 'Мало людей'));
+  marshrutCollection.addItem(Marshrut(14, 22, 'Помірна кількість пасажирів'));
+  marshrutCollection.addItem(Marshrut(18, 40, 'Вечірній пік'));
+
+  TramStop stop = TramStop('Вокзальна', [1, 3, 5], marshrutCollection);
+  stop.showResults();
+}
