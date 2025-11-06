@@ -1,0 +1,76 @@
+class Marshrut {
+  int hour;
+  int passengers;
+  String comment;
+
+  Marshrut(this.hour, this.passengers, this.comment);
+
+  // Гетери і сетери
+  int get getHour => hour;
+  int get getPassengers => passengers;
+  String get getComment => comment;
+
+  set setHour(int h) => hour = h;
+  set setPassengers(int p) => passengers = p;
+  set setComment(String c) => comment = c;
+}
+
+class TramStop {
+  String name;
+  List<int> routes;
+  List<Marshrut> marshruts;
+
+  TramStop(this.name, this.routes, this.marshruts);
+
+  // Загальна кількість пасажирів
+  int totalPassengers() {
+    int total = 0;
+    for (var m in marshruts) {
+      total += m.passengers;
+    }
+    return total;
+  }
+
+  // Година з найменшою кількістю пасажирів
+  int hourWithMinPassengers() {
+    Marshrut min = marshruts[0];
+    for (var m in marshruts) {
+      if (m.passengers < min.passengers) {
+        min = m;
+      }
+    }
+    return min.hour;
+  }
+
+  // Найдовший коментар
+  String longestComment() {
+    String longest = marshruts[0].comment;
+    for (var m in marshruts) {
+      if (m.comment.length > longest.length) {
+        longest = m.comment;
+      }
+    }
+    return longest;
+  }
+
+  // Виведення результатів
+  void showResults() {
+    print('Зупинка: $name');
+    print('Маршрути: ${routes.join(", ")}');
+    print('Загальна кількість пасажирів: ${totalPassengers()}');
+    print('Година з найменшою кількістю пасажирів: ${hourWithMinPassengers()}');
+    print('Найдовший коментар: "${longestComment()}"');
+  }
+}
+
+void main() {
+  List<Marshrut> data = [
+    Marshrut(8, 30, 'Ранковий наплив'),
+    Marshrut(10, 15, 'Мало людей'),
+    Marshrut(14, 22, 'Помірна кількість пасажирів'),
+    Marshrut(18, 40, 'Вечірній пік'),
+  ];
+
+  TramStop stop = TramStop('Вокзальна', [1, 3, 5], data);
+  stop.showResults();
+}
