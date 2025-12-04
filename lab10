@@ -1,0 +1,164 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const WritersApp());
+}
+
+class WritersApp extends StatelessWidget {
+  const WritersApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Українські письменники',
+      home: const WritersListScreen(),
+    );
+  }
+}
+
+class Writer {
+  final String name;
+  final String description;
+  final String imageUrl; // будемо використовувати Special:FilePath -> редиректить на справжній ресурс
+
+  const Writer(this.name, this.description, this.imageUrl);
+}
+
+class WritersListScreen extends StatelessWidget {
+  const WritersListScreen({super.key});
+
+  // Використовуємо Special:FilePath для коректного редиректу на сторінку файлу Wikimedia Commons
+  final List<Writer> writers = const [
+    Writer(
+      'Тарас Шевченко',
+      'Видатний поет, художник, символ української нації.',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Taras_Shevchenko_-_portrait_by_Ivan_Kramskoi.jpg',
+    ),
+    Writer(
+      'Леся Українка',
+      'Українська поетеса, драматургиня, громадська діячка.',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Lesya_Ukrainka_portrait.jpg',
+    ),
+    Writer(
+      'Іван Франко',
+      'Письменник, поет, перекладач, публіцист.',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/IvanFranko1886.jpg',
+    ),
+    Writer(
+      'Михайло Коцюбинський',
+      'Майстер психологічної прози.',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Mykhailo_Kotsiubynsky.jpg',
+    ),
+    Writer(
+      'Панас Мирний',
+      'Автор соціально-психологічних романів.',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/PanasMyrnyi.jpg',
+    ),
+    Writer(
+      'Ольга Кобилянська',
+      'Українська письменниця та феміністка.',
+      'https://commons.wikimedia.org/wiki/Special:FilePath/Olha_Kobylyanska.jpg',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Українські письменники'),
+        centerTitle: true,
+      ),
+      body: ListView.builder(
+        itemCount: writers.length,
+        itemBuilder: (context, index) {
+          final writer = writers[index];
+
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            elevation: 3,
+            child: ListTile(
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.network(
+                  writer.imageUrl,
+                  width: 64,
+                  height: 64,
+                  fit: BoxFit.cover,
+                  // Якщо з якоїсь причини зображення не доступне — показуємо іконку
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 64,
+                      height: 64,
+                      color: Colors.grey.shade200,
+                      child: const Icon(Icons.person, size: 36, color: Colors.grey),
+                    );
+                  },
+                ),
+              ),
+              title: Text(writer.name),
+              subtitle: Text(writer.description),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => WriterDetailScreen(writer: writer),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class WriterDetailScreen extends StatelessWidget {
+  final Writer writer;
+
+  const WriterDetailScreen({super.key, required this.writer});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(writer.name)),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  writer.imageUrl,
+                  height: 300,
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      height: 300,
+                      color: Colors.grey.shade200,
+                      child: const Center(child: Icon(Icons.person, size: 120, color: Colors.grey)),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                writer.name,
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                writer.description,
+                style: const TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
