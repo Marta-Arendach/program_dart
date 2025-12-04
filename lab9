@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const HymnMaterialInterface());
+}
+
+class HymnMaterialInterface extends StatelessWidget {
+  const HymnMaterialInterface({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Верхній ряд (жовтий + синій)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      HymnBlock(
+                        color: Colors.yellow.shade200,
+                        width: 300,
+                        height: 200,
+                        text:
+                            'Ще не вмерла Україна, і слава, і воля,\nще нам, браття',
+                      ),
+                      const SizedBox(width: 50),
+                      HymnBlock(
+                        color: Colors.lightBlue.shade200,
+                        width: 300,
+                        height: 300,
+                        text:
+                            'Згинуть наші вороженьки,\nяк роса на сонці,\nзапануєм і ми, браття, у своїй сторонці.',
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 50),
+
+                  // Білий блок внизу
+                  HymnBlock(
+                    color: Colors.white,
+                    width: 200,
+                    height: 200,
+                    text: 'І покажем, що ми, браття, козацького роду.',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//
+// =======================================================
+// 📌 ВЛАСНИЙ ВІДЖЕТ (StatefulWidget) З ≥3 ПАРАМЕТРАМИ
+// =======================================================
+//
+
+class HymnBlock extends StatefulWidget {
+  final Color color;
+  final double width;
+  final double height;
+  final String text;
+
+  const HymnBlock({
+    super.key,
+    required this.color,
+    required this.width,
+    required this.height,
+    required this.text,
+  });
+
+  @override
+  State<HymnBlock> createState() => _HymnBlockState();
+}
+
+class _HymnBlockState extends State<HymnBlock> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 4,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: widget.color,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.black, width: 1.5),
+        ),
+        child: Center(
+          child: Text(
+            widget.text,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 16,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
