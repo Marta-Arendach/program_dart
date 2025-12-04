@@ -1,0 +1,117 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const HymnInterface());
+}
+
+class HymnInterface extends StatelessWidget {
+  const HymnInterface({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: CustomPaint(
+            painter: HymnPainter(),
+            child: const SizedBox.expand(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HymnPainter extends CustomPainter {
+  // Параметри з варіанту
+  final double a = 300; // = c = e
+  final double b = 300;
+  final double d = 200;
+  final double g = 300, h = 300;
+  final double f = 50;
+  final double i = 200;
+  final double m = 400;
+  final double k = 150;
+  final double n = 5, p = 5;
+  final double r = 3, s = 3;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paintYellow = Paint()..color = Colors.yellow.shade200;
+    final paintBlue = Paint()..color = Colors.lightBlue.shade200;
+    final paintWhite = Paint()..color = Colors.white;
+    final border = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    // 🟨 1. Жовтий блок
+    final rectYellow = Rect.fromLTWH(50, 50, g, d);
+    canvas.drawRect(rectYellow, paintYellow);
+    canvas.drawRect(rectYellow, border);
+
+    // 🟦 2. Синій блок
+    final rectBlue = Rect.fromLTWH(
+        rectYellow.right + f, // відстань між блоками
+        rectYellow.top,
+        h,
+        b);
+    canvas.drawRect(rectBlue, paintBlue);
+    canvas.drawRect(rectBlue, border);
+
+    // ⬜️ 3. Білий блок
+    final rectWhite = Rect.fromLTWH(
+        rectYellow.left + 150, // трохи зсунемо вниз
+        rectYellow.bottom + f,
+        i,
+        d);
+    canvas.drawRect(rectWhite, paintWhite);
+    canvas.drawRect(rectWhite, border);
+
+    // ✏️ Стиль шрифту (курсив)
+    final textStyle = TextStyle(
+      fontSize: 16,
+      fontStyle: FontStyle.italic,
+      color: Colors.black,
+    );
+
+    // 🟨 Текст у жовтому блоці
+    final textYellow = TextPainter(
+      text: TextSpan(
+        text: 'Ще не вмерла Україна, і слава, і воля,\nще нам, браття',
+        style: textStyle,
+      ),
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: g - 2 * n);
+    textYellow.paint(canvas, Offset(rectYellow.left + n, rectYellow.top + n));
+
+    // 🟦 Текст у синьому блоці
+    final textBlue = TextPainter(
+      text: TextSpan(
+        text:
+            'Згинуть наші вороженьки,\nяк роса на сонці,\nзапануєм і ми, браття, у своїй сторонці.',
+        style: textStyle,
+      ),
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: h - 2 * r);
+    textBlue.paint(canvas, Offset(rectBlue.left + r, rectBlue.top + r));
+
+    // ⬜️ Текст у білому блоці
+    final textWhite = TextPainter(
+      text: TextSpan(
+        text: 'І покажем, що ми, браття, козацького роду.',
+        style: textStyle,
+      ),
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: i - 2 * p);
+    textWhite.paint(canvas, Offset(rectWhite.left + p, rectWhite.top + p));
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
